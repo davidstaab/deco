@@ -150,6 +150,9 @@ if __name__ == '__main__':
             o_text,
             chunk_size=APP_CONFIG['speech_synthesis']['chunk_size'],
             )
-        with open(cli.output_file, mode='wb') as f:
-            for chunk in audio_stream:
-                f.write(chunk)
+        if len(audio_stream):
+            with open(cli.output_file, mode='wb') as f:
+                for chunk in audio_stream:
+                    f.write(chunk)
+        else:
+            raise RuntimeError('Speech synthesis output size was zero. Possible problem with input. Use "-x" option to view intermediate outputs.')
