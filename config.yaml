@@ -4,6 +4,7 @@ transcription:
 cleanup:
   model: gpt-3.5-turbo
   output_file: ''
+  # TODO: Add contractions to soften the output language a bit
   prompt: 'Check the user''s text for grammar, spelling, and punctuation errors and
     reproduce it, fixing the errors you find. Do not omit any sentences from your
     reproduction.
@@ -13,6 +14,7 @@ cleanup:
 optimization:
   model: gpt-3.5-turbo
   output_file: ''
+  # TODO: Add contractions to soften the output language a bit
   prompt: 'Optimize the user''s text, retaining the narrative while removing unnecessary
     sentence features and reorganizing thoughts into a consistent flow. Make sure
     to retain the following elements in particular:
