@@ -1,0 +1,52 @@
+transcription:
+  model: whisper-1
+  output_file: ''
+cleanup:
+  model: gpt-3.5-turbo
+  output_file: ''
+  prompt: 'Check the user''s text for grammar, spelling, and punctuation errors and
+    reproduce it, fixing the errors you find. Do not omit any sentences from your
+    reproduction.
+    If you find named entities using your Named Entity Recognition capability, ensure
+    their preservation and correct formatting.
+    Output the corrected text.'
+optimization:
+  model: gpt-3.5-turbo
+  output_file: ''
+  prompt: 'Optimize the user''s text, retaining the narrative while removing unnecessary
+    sentence features and reorganizing thoughts into a consistent flow. Make sure
+    to retain the following elements in particular:
+    - all named entities (using your Named Entity Recognition capability);
+    - detailed depictions of objects or people;
+    - the user''s voice and tense: for example, if the narrative is in first-person
+    present tense, your output should be in first-person present tense.
+    DO NOT synthesize your own statements or ideas. Use ONLY the information provided
+    by the user.
+    After you have done this, compare your work to the original text and evaluate
+    whether it is a satisfactory representation of the original. Don''t decide this
+    until you have optimized it on your own.
+    Afterward, perform the task again with the goal of generating a better result
+    than your first attempt. If it helps achieve the objective, add details from the
+    original back into your work. Your second output may be longer than your first.
+    Iterate on the task 3 times, each time aiming for a better result than all prior
+    attempts.
+    Use the following format for your reply:
+    ### Attempt 1:
+    [Your 1st optimization here.]
+    ### Attempt 2:
+    [Your 2nd optimization here.]
+    ### Attempt 3:
+    [Your 3rd optimization here.]
+    '
+speech_synthesis:
+  chunk_size: 1000  # Studio voice limit appears to be 1000 bytes
+  gcloud_project: ''  # '' will use the SDK's default project
+  gcloud_sdk_bin: ~/google-cloud-sdk/bin/gcloud
+  voice:
+    audioEncoding: MP3
+    languageCode: en-US
+    name: en-US-Studio-M  # Studio voices are for reading longform input. Not compatible with SSML params.
+    pitch: 0.0  # semitones above or below normal pitch; range [-20.0, 20.0]
+    sampleRateHertz: 16000
+    speakingRate: 1.25  # range [0.25, 4.0]
+    volumeGainDb: 0.0  # range [-96.0, 16.0]
