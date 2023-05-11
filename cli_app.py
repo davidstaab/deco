@@ -4,9 +4,13 @@ Intention: Make a CLI-driven app that works with files on disk
 import argparse
 import pathlib
 
+from dotenv import load_dotenv
+
 import gcloud_adapter as g
 import openai_adapter as o
 from utils import APP_CONFIG, load_config
+
+load_dotenv()
 
 
 def override_app_config(namespace: argparse.Namespace) -> None:
@@ -150,9 +154,16 @@ if __name__ == '__main__':
             o_text,
             chunk_size=APP_CONFIG['speech_synthesis']['chunk_size'],
             )
-        if len(audio_stream):
-            with open(cli.output_file, mode='wb') as f:
-                for chunk in audio_stream:
-                    f.write(chunk)
-        else:
-            raise RuntimeError('Speech synthesis output size was zero. Possible problem with input. Use "-x" option to view intermediate outputs.')
+        try:
+            chunk0 = next(audio_stream)
+            if len(chunk0):
+                with open(cli.output_file, mode='wb') as f:
+                    f.write(chunk0)
+                    for chunk in audio_stream:
+                        f.write(chunk)
+            else:
+                raise ValueError('First chunk of audio stream was size 0.')
+        except (StopIteration, ValueError) as e:
+            raise RuntimeError('Speech synthesis output size was zero. \
+                Possible problem with input. Use "-x" option to view \
+                    intermediate outputs.') from e
