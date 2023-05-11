@@ -7,7 +7,8 @@ import typing as t
 from base64 import b64decode
 from enum import Enum
 
-import regex as re
+# import regex as re
+import re
 import requests
 
 from utils import APP_CONFIG
