@@ -2,7 +2,6 @@ import pathlib
 import signal
 from time import sleep
 
-import ffmpeg
 import yaml
 
 APP_CONFIG = {}
@@ -31,49 +30,6 @@ if __name__ == '__main__':
     def signal_handler(signal, frame) -> None:
         global interrupted
         interrupted = True
-
-    def record_apple_mic(file_name: pathlib.Path) -> None:
-        global interrupted
-        
-        """
-        What the flags mean
-        -f = "force format". In this case we're forcing the use of AVFoundation
-        -i = input source [handled by input() method]. Typically it's a file, but you can use devices.
-            "0:1" = Record both audio and video from FaceTime camera and built-in mic
-            "0" = Record just video from FaceTime camera
-            ":1" = Record just audio from built-in mic
-        -t = time in seconds. If you want it to run indefinitely until you stop it (ControlC) omit this value
-        """
-        # TODO (probably): Write a function to get the correct input source using 'ffmpeg -f avfoundation -list_devices true -i ""'
-        process = (
-            ffmpeg
-            .input(
-                ':0',
-                f='avfoundation',
-                )
-            .output(
-                str(file_name),
-                acodec='mp3',
-                # ac=1, 
-                # ar=16000,
-                )
-            .overwrite_output()
-            .run_async(
-                # pipe_stdout=True,
-                # pipe_stderr=True,
-                quiet=True,  # NB: True sets `pipe_` parameters to null STDOUT and map STDERR->STDOUT
-                )
-        )
-
-        while process.poll() is None:
-            if interrupted:
-                process.terminate()
-                break
-            else:
-                sleep(1)
-
-        if process.returncode is not None:
-            raise RuntimeError(str(process.stdout.read()).replace('\\n', '\n'))
 
     def generate_config() -> None:
         """
