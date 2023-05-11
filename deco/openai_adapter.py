@@ -3,8 +3,6 @@ import typing as t
 
 import openai
 
-from utils import APP_CONFIG
-
 TRANSCRIBE_FORMATS = ['mp3', 'mp4', 'mpeg', 'mpga', 'm4a', 'wav', 'webm']
 
 
@@ -112,30 +110,3 @@ def detect_audio_format(data: bytes) -> t.Optional[str]:
             return extension
 
     return None
-
-
-if __name__ == '__main__':
-    """
-    This area is for interactive developer debugging
-    """
-    
-    TEST_INPUT = pathlib.Path.cwd().joinpath("test-files/A big idea.mp3")
-    
-    # Transcribe
-    t_model = APP_CONFIG['transcription']['model']
-    t_output = TEST_INPUT.parent.joinpath(TEST_INPUT.stem + f'-openai({t_model}).txt')
-    transcribe_to_file(TEST_INPUT, t_output, t_model)
-    
-    # Cleanup
-    messages = create_chat_messages(APP_CONFIG['cleanup']['prompt'], t_output.read_text(), '')
-    c_output = t_output.parent.joinpath(f'{t_output.stem}-clean.txt')
-    completion, tokens = basic_chat(messages, APP_CONFIG['cleanup']['model'])
-    with open(c_output, mode='w') as f:
-        f.write(completion)
-    
-    # Optimization
-    messages = create_chat_messages(APP_CONFIG['optimization']['prompt'], c_output.read_text(), '')
-    o_output = c_output.parent.joinpath(f'{c_output.stem}-optim.txt')
-    completion, tokens = basic_chat(messages, APP_CONFIG['cleanup']['model'])
-    with open(o_output, mode='w') as f:
-        f.write(completion)

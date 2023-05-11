@@ -6,9 +6,9 @@ from tempfile import NamedTemporaryFile
 
 from dotenv import load_dotenv
 
-import gcloud_adapter as g
-import openai_adapter as o
-from utils import APP_CONFIG, load_config
+import deco.gcloud_adapter as g
+import deco.openai_adapter as o
+from deco.utils import APP_CONFIG, load_config
 
 load_dotenv()
 

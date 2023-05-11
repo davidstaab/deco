@@ -1,17 +1,14 @@
 # Using gcloud REST API rather than Python API because of the latter's dependency constraints
 
 import json
-import pathlib
+import re
 import subprocess
 import typing as t
 from base64 import b64decode
 from enum import Enum
 
-# import regex as re
-import re
 import requests
-
-from utils import APP_CONFIG
+from .utils import APP_CONFIG
 
 
 class SsmlVoiceGender(str, Enum):
@@ -215,26 +212,3 @@ class GCloudTTS():
                     yield self.synthesize(c)
             else:
                 yield self.synthesize(chunk)
-
-
-if __name__ == '__main__':
-    """
-    This area is for interactive developer debugging
-    """
-    
-    TEST_INPUT = pathlib.Path.cwd().joinpath("test-files/A big idea" + "-openai(whisper-1)-clean-optim.txt")
-    OUTPUT_PATH = TEST_INPUT.parent.joinpath(TEST_INPUT.stem + '-gcloud.mp3')
-
-    text = ''
-    with TEST_INPUT.open() as f:
-        for line in f:
-            if line.strip() == '### Final:':
-                text = f.readline()
-                break
-
-    tts = GCloudTTS()
-    audio_stream = tts.synthesize_stream(text, chunk_size=1000)  # Apparent size limit for Studio voices
-    
-    with OUTPUT_PATH.open('wb') as f:
-        for chunk in audio_stream:
-            f.write(chunk)
