@@ -1,4 +1,4 @@
-import pathlib
+from pathlib import Path
 import typing as t
 
 import openai
@@ -69,10 +69,10 @@ def adv_chat(messages: list[dict], model_name: str, temperature: float=0.0, ) ->
     return response
 
 
-def transcribe(source_file: str|pathlib.Path, model_name: str) -> str:
+def transcribe(source_file: str|Path, model_name: str) -> str:
 
     if isinstance(source_file, str):
-        source_file = pathlib.Path(source_file)
+        source_file = Path(source_file)
     
     ret = openai.Audio.transcribe(
         model_name,
@@ -81,7 +81,7 @@ def transcribe(source_file: str|pathlib.Path, model_name: str) -> str:
     return ret.text
 
 
-def transcribe_to_file(source_file: str|pathlib.Path, output_file: str|pathlib.Path, model_name: str) -> None:
+def transcribe_to_file(source_file: str|Path, output_file: str|Path, model_name: str) -> None:
     with open(output_file, mode='w') as f:
         f.write(transcribe(source_file, model_name))
 

@@ -1,5 +1,5 @@
 import argparse
-import pathlib
+from pathlib import Path
 import sys
 import typing as t
 from tempfile import NamedTemporaryFile
@@ -68,7 +68,7 @@ def override_app_config() -> None:
         load_config(CLI.config_file)
     
     if CLI.extra_outputs:
-        in_file = pathlib.Path(CLI.input)
+        in_file = Path(CLI.input)
         out_trunk = str(in_file.parent.joinpath(in_file.stem).resolve())
         APP_CONFIG['transcription']['output_file'] = out_trunk + '-trans.txt'
         APP_CONFIG['cleanup']['output_file'] = out_trunk + '-clean.txt'
@@ -114,7 +114,7 @@ def optimize(text: str) -> str:
 def ingest() -> str:
     
     if CLI.in_file:
-        in_file = pathlib.Path(CLI.in_file)
+        in_file = Path(CLI.in_file)
     else:
         # STDIN - However, o.transcribe() requires a file on disk as input 
         if CLI.transcribe:
@@ -130,7 +130,7 @@ def ingest() -> str:
                 raise RuntimeError('Expected UTF-8 text at STDIN but got binary data instead.') from e
 
         temp.close()
-        in_file = pathlib.Path(temp.name)
+        in_file = Path(temp.name)
         
     if in_file.suffix.lstrip('.').lower() in (o.TRANSCRIBE_FORMATS):
         # Transcribe
@@ -138,13 +138,13 @@ def ingest() -> str:
 
         if t_out_file:
             o.transcribe_to_file(in_file, t_out_file, APP_CONFIG['transcription']['model'])
-            in_text = pathlib.Path(t_out_file).read_text()
+            in_text = Path(t_out_file).read_text()
         else:
             in_text = o.transcribe(in_file, APP_CONFIG['transcription']['model'])
         
         if not CLI.in_file:
             # Delete temporary file  
-            pathlib.Path.unlink(in_file)
+            Path.unlink(in_file)
             
     else:
         # Ingest
