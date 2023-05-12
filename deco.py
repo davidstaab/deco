@@ -209,7 +209,7 @@ if __name__ == '__main__':
         tts = g.GCloudTTS()
         audio_stream = tts.synthesize_stream(
             o_text,
-            chunk_size=APP_CONFIG['speech_synthesis']['chunk_size'],
+            block_size=APP_CONFIG['speech_synthesis']['chunk_size'],
             )
         try:
             chunk0 = next(audio_stream)

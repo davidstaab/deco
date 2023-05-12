@@ -46,7 +46,7 @@ class SentenceTokenizer:
     websites = "[.](com|net|org|io|gov|edu|me)"
     digits = "([0-9])"
 
-    def __call__(self, text: str) -> str:
+    def __call__(self, text: str) -> list[str]:
         text = " " + text + "  "
         text = text.replace("\n"," ")
         text = re.sub(self.prefixes,"\\1<prd>",text)
@@ -179,36 +179,62 @@ class GCloudTTS():
 
         return b64decode(ret_str['audioContent'])
 
-    def synthesize_stream(self, text: str|t.Generator, chunk_size: int) -> t.Generator:
+    def synthesize_stream(self, text: str|t.Generator, block_size: int) -> t.Generator:
         
-        chunk_size = min(chunk_size, self.GTTS_MAX_LENGTH)
+        block_size = min(block_size, self.GTTS_MAX_LENGTH)
         
         if isinstance(text, t.Generator):
             raise NotImplementedError
         elif isinstance(text, str):
 
-            if len(text) > chunk_size:
-                chunks = self.sentencizer(text)
-
-                if len(sorted(chunks, key=lambda _: len(_), reverse=True)[0]) > chunk_size:
-                    for i, chunk in enumerate(chunks):
-                        if len(chunk) > chunk_size:
-                            sub_chunks = []
-                            j = 0
-                            while j < len(chunk):
-                                sub_chunks.append(chunk[j : j + chunk_size])
-                                j = j + chunk_size
-                            chunks[i] = sub_chunks 
+            if len(text) > block_size:
+                blocks = self.break_up_text(text, block_size) 
             else:
-                chunks = [text]
+                blocks = [text]
                 
         else:
             raise ValueError('Text must be type str or Generator')
         
-        for chunk in chunks:
+        for block in blocks:
 
-            if isinstance(chunk, list):
-                for c in chunk:
-                    yield self.synthesize(c)
+            if isinstance(block, list):
+                for b in block:
+                    yield self.synthesize(b)
             else:
-                yield self.synthesize(chunk)
+                yield self.synthesize(block)
+
+    def break_up_text(self, text: str, max_block_size: int) -> list[str]:
+        """
+        Break text into blocks of sentences.
+        Try to make every block as near to max size without going over.
+        Try to respect sentence boundaries.
+        """
+        
+        sentences = self.sentencizer(text)
+        
+        # Combine short sequential sentences into single blocks no larger than max_block_size.
+        blocks = []
+        current_block = ''
+        for s in sentences:
+            
+            if len(current_block) + len(s) <= max_block_size:
+                current_block += s
+            else:
+                blocks.append(current_block)
+                current_block = s
+        
+        # Add the last block if it's not empty
+        if current_block:
+            blocks.append(current_block)
+        
+        # Break long sentences into new blocks, as few as possible
+        for i, block in enumerate(blocks):
+            if len(block) > max_block_size:
+                sub_blocks = []
+                j = 0
+                while j < len(block):
+                    sub_blocks.append(block[j : j + max_block_size])
+                    j = j + max_block_size
+                blocks[i:i+1] = sub_blocks
+        return blocks
+
