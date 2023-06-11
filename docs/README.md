@@ -1,26 +1,20 @@
-# <Your-Project-Title>
+# De-Co
+*(like a codec in reverse)*
 
 ## Description
 
-Provide a short description explaining the what, why, and how of your project. Use the following questions as a guide:
+What if LLMs (or, more specifically, agent-chains built around them) could make our communication more efficient? Using ChatGPT to summarize long documents is already common. Maybe they can summarize the messages we leave one another, too.
 
-- What was your motivation?
-- Why did you build this project? (Note: the answer is not "Because it was a homework assignment.")
-- What problem does it solve?
-- What did you learn?
+De-Co is a toy I've built to answer that question. It takes spoken input from a user (as text or voice), removes speech inefficiencies, optimizes it to get down to the point, and then spits out text or voice to replace the original. I've seen it take 10 minute rambling monologues and turn them into 4 minute messages.
 
-## Table of Contents (Optional)
+Ultimately, this project is a chance to keep my thumb on the pulse of explosive change around large language models. I don't intend for it to compete in the attention economy (much less the commercial economy) with various similar projects. It's just a personal hobby project to hammer on once in awhile. When I see a tool or model that looks like it'll be influential in the LLM market, I can use this project to learn how to implement it.
 
-If your README is long, add a table of contents to make it easy for users to find what they need.
-
-- [Installation](#installation)
-- [Usage](#usage)
-- [Credits](#credits)
-- [License](#license)
+## License
+![See here](LICENSE)
 
 ## Installation
 
-What are the steps required to install your project? Provide a step-by-step description of how to get the development environment running.
+Pull the repo, then run `python3 -m deco`
 
 ## Usage
 
