@@ -4,6 +4,7 @@ channels:
 dependencies:
   - python>=3.10
   - python-dotenv~=1.0
-  - requests~=2.29
+  - langchain~=0.0.168
+  - openai~=0.27.6
+  # - requests~=2.29  # DS might not need this after langchain refactor
   - pyyaml~=6.0
-  - openai~=0.27.5
